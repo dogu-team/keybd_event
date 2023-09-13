@@ -46,6 +46,15 @@ func (k *KeyBonding) AddKey(key int) {
 	k.keys = append(k.keys, key)
 }
 
+//RemoveKey remove one key pressed
+func (k *KeyBonding) RemoveKey(key int) {
+	for i, v := range k.keys {
+		if v == key {
+			k.keys = append(k.keys[:i], k.keys[i+1:]...)
+		}
+	}
+}
+
 //HasALT If key ALT pressed
 func (k *KeyBonding) HasALT(b bool) {
 	k.hasALT = b
