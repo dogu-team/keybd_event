@@ -55,6 +55,11 @@ func (k *KeyBonding) RemoveKey(key int) {
 	}
 }
 
+//GetKeys get keys
+func (k *KeyBonding) GetKeys() []int {
+	return k.keys
+}
+
 //HasALT If key ALT pressed
 func (k *KeyBonding) HasALT(b bool) {
 	k.hasALT = b
