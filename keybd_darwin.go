@@ -14,7 +14,7 @@ package keybd_event
 	return event;
  }
  void KeyTap(CGEventRef event){
-	CGEventPost(kCGAnnotatedSessionEventTap, event);
+	CGEventPost(kCGSessionEventTap, event);
 	CFRelease(event);
  }
  void AddActionKey(CGEventFlags type,CGEventRef event){
