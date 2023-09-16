@@ -17,12 +17,8 @@ package keybd_event
 	CGEventPost(kCGSessionEventTap, event);
 	CFRelease(event);
  }
- void AddActionKey(CGEventFlags type,CGEventRef event){
- 	CGEventSetFlags(event, type);
- }
 */
 import "C"
-import "time"
 
 const (
 	_AShift          = C.kCGEventFlagMaskAlphaShift
@@ -45,97 +41,69 @@ func initKeyBD() error { return nil }
 
 // Press key(s)
 func (k *KeyBonding) Press() error {
+	if k.hasALT {
+		downKey(_VK_ALT)
+	}
+	if k.hasCTRL {
+		downKey(_VK_CTRL)
+	}
+	if k.hasSHIFT {
+		downKey(_VK_SHIFT)
+	}
+	if k.hasRCTRL { //not support on mac
+		downKey(_VK_CTRL)
+	}
+	if k.hasRSHIFT { //not support on mac
+		downKey(_VK_SHIFT)
+	}
+	if k.hasALTGR {
+		downKey(_VK_ALT)
+	}
+	if k.hasSuper {
+		downKey(_VK_CMD)
+	}
 	for _, key := range k.keys {
-		k.keyPress(key)
+		downKey(key)
 	}
 	return nil
 }
 
 // Release key(s)
 func (k *KeyBonding) Release() error {
-	for _, key := range k.keys {
-		k.keyRelease(key)
-	}
-	return nil
-}
-
-// Launch key bounding
-func (k *KeyBonding) Launching() error {
-
-	for _, key := range k.keys {
-		k.tapKey(key)
-	}
-	return nil
-}
-func altgr(event C.CGEventRef) {
-	alt(event)
-}
-func shift(event C.CGEventRef) {
-	C.AddActionKey(_VK_SHIFT, event)
-}
-func ctrl(event C.CGEventRef) {
-	C.AddActionKey(_VK_CTRL, event)
-}
-func alt(event C.CGEventRef) {
-	C.AddActionKey(_VK_ALT, event)
-}
-func cmd(event C.CGEventRef) {
-	C.AddActionKey(_VK_CMD, event)
-}
-func (k KeyBonding) keyPress(key int) {
-	downEvent := C.CreateDown(C.int(key))
 	if k.hasALT {
-		alt(downEvent)
+		upKey(_VK_ALT)
 	}
 	if k.hasCTRL {
-		ctrl(downEvent)
+		upKey(_VK_CTRL)
 	}
 	if k.hasSHIFT {
-		shift(downEvent)
+		upKey(_VK_SHIFT)
 	}
 	if k.hasRCTRL { //not support on mac
-		ctrl(downEvent)
+		upKey(_VK_CTRL)
 	}
 	if k.hasRSHIFT { //not support on mac
-		shift(downEvent)
+		upKey(_VK_SHIFT)
 	}
 	if k.hasALTGR {
-		altgr(downEvent)
+		upKey(_VK_ALT)
 	}
 	if k.hasSuper {
-		cmd(downEvent)
+		upKey(_VK_CMD)
 	}
+	for _, key := range k.keys {
+		upKey(key)
+	}
+	return nil
+}
+
+func downKey(key int) {
+	downEvent := C.CreateDown(C.int(key))
 	C.KeyTap(downEvent)
 }
-func (k KeyBonding) keyRelease(key int) {
+func upKey(key int) {
 	upEvent := C.CreateUp(C.int(key))
-	if k.hasALT {
-		alt(upEvent)
-	}
-	if k.hasCTRL {
-		ctrl(upEvent)
-	}
-	if k.hasSHIFT {
-		shift(upEvent)
-	}
-	if k.hasRCTRL { //not support on mac
-		ctrl(upEvent)
-	}
-	if k.hasRSHIFT { //not support on mac
-		shift(upEvent)
-	}
-	if k.hasALTGR {
-		altgr(upEvent)
-	}
-	if k.hasSuper {
-		cmd(upEvent)
-	}
 	C.KeyTap(upEvent)
-}
-func (k KeyBonding) tapKey(key int) {
-	k.keyPress(key)
-	time.Sleep(100 * time.Millisecond) //ignore if speed is most in my test system
-	k.keyRelease(key)
 }
 
 const (
