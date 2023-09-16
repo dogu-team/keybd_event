@@ -21,20 +21,22 @@ package keybd_event
 import "C"
 
 const (
-	_AShift          = C.kCGEventFlagMaskAlphaShift
-	_VK_SHIFT        = C.kCGEventFlagMaskShift
-	_VK_CTRL         = C.kCGEventFlagMaskControl
-	_VK_ALT          = C.kCGEventFlagMaskAlternate
-	_VK_CMD          = C.kCGEventFlagMaskCommand
-	_Help            = C.kCGEventFlagMaskHelp
-	_VK_FN           = C.kCGEventFlagMaskSecondaryFn
-	_NumPad          = C.kCGEventFlagMaskNumericPad
-	_Coalesced       = C.kCGEventFlagMaskNonCoalesced
-	_VK_Control      = 0x3B
-	_VK_RightShift   = 0x3C
-	_VK_RightControl = 0x3E
+	_MASK_AShift     = C.kCGEventFlagMaskAlphaShift
+	_VK_MASK_SHIFT   = C.kCGEventFlagMaskShift
+	_VK_MASK_CTRL    = C.kCGEventFlagMaskControl
+	_VK_MASK_ALT     = C.kCGEventFlagMaskAlternate
+	_VK_MASK_CMD     = C.kCGEventFlagMaskCommand
+	_MASK_Help       = C.kCGEventFlagMaskHelp
+	_VK_MASK_FN      = C.kCGEventFlagMaskSecondaryFn
+	_MASK_NumPad     = C.kCGEventFlagMaskNumericPad
+	_MASK_Coalesced  = C.kCGEventFlagMaskNonCoalesced
 	_VK_Command      = 0x37
 	_VK_Shift        = 0x38
+	_VK_Option       = 0x3A
+	_VK_Control      = 0x3B
+	_VK_RightShift   = 0x3C
+	_VK_RightOption  = 0x3D
+	_VK_RightControl = 0x3E
 )
 
 func initKeyBD() error { return nil }
@@ -42,25 +44,25 @@ func initKeyBD() error { return nil }
 // Press key(s)
 func (k *KeyBonding) Press() error {
 	if k.hasALT {
-		downKey(_VK_ALT)
+		downKey(_VK_Option)
 	}
 	if k.hasCTRL {
-		downKey(_VK_CTRL)
+		downKey(_VK_Control)
 	}
 	if k.hasSHIFT {
-		downKey(_VK_SHIFT)
+		downKey(_VK_Shift)
 	}
-	if k.hasRCTRL { //not support on mac
-		downKey(_VK_CTRL)
+	if k.hasRCTRL {
+		downKey(_VK_RightControl)
 	}
-	if k.hasRSHIFT { //not support on mac
-		downKey(_VK_SHIFT)
+	if k.hasRSHIFT {
+		downKey(_VK_RightShift)
 	}
 	if k.hasALTGR {
-		downKey(_VK_ALT)
+		downKey(_VK_RightOption)
 	}
 	if k.hasSuper {
-		downKey(_VK_CMD)
+		downKey(_VK_Command)
 	}
 	for _, key := range k.keys {
 		downKey(key)
@@ -71,25 +73,25 @@ func (k *KeyBonding) Press() error {
 // Release key(s)
 func (k *KeyBonding) Release() error {
 	if k.hasALT {
-		upKey(_VK_ALT)
+		upKey(_VK_Option)
 	}
 	if k.hasCTRL {
-		upKey(_VK_CTRL)
+		upKey(_VK_Control)
 	}
 	if k.hasSHIFT {
-		upKey(_VK_SHIFT)
+		upKey(_VK_Shift)
 	}
-	if k.hasRCTRL { //not support on mac
-		upKey(_VK_CTRL)
+	if k.hasRCTRL {
+		upKey(_VK_RightControl)
 	}
-	if k.hasRSHIFT { //not support on mac
-		upKey(_VK_SHIFT)
+	if k.hasRSHIFT {
+		upKey(_VK_RightShift)
 	}
 	if k.hasALTGR {
-		upKey(_VK_ALT)
+		upKey(_VK_RightOption)
 	}
 	if k.hasSuper {
-		upKey(_VK_CMD)
+		upKey(_VK_Command)
 	}
 	for _, key := range k.keys {
 		upKey(key)
